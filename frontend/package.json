@@ -16,6 +16,8 @@
     "vue-router": "^4.3.0"
   },
   "devDependencies": {
+    "@esbuild/linux-arm64": "^0.28.2",
+    "@rollup/rollup-linux-arm64-gnu": "^4.64.0",
     "@types/node": "^20.11.30",
     "@vitejs/plugin-vue": "^5.0.4",
     "typescript": "^5.4.3",

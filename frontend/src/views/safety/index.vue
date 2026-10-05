@@ -63,6 +63,28 @@
       </tbody>
     </table>
 
+    <section class="permit-panel">
+      <h3>未终结作业票（与作业许可同一数据源，不另算）</h3>
+      <p class="permit-count">未终结作业数：{{ livePermitCount }}</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>作业票编号</th><th>作业类型</th><th>作业地点</th><th>监护人</th><th>当前状态</th></tr>
+        </thead>
+        <tbody>
+          <tr v-for="row in livePermits" :key="String(row.id)">
+            <td>{{ row.作业票编号 }}</td>
+            <td>{{ row.作业类型 }}</td>
+            <td>{{ row.作业地点 }}</td>
+            <td>{{ row.监护人 }}</td>
+            <td>{{ row.status }}</td>
+          </tr>
+          <tr v-if="!livePermits.length">
+            <td colspan="5" class="empty-state">当前没有未终结的作业票</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
     <footer class="page-foot">
       <span>共 {{ total }} 条安全巡检记录</span>
       <span v-if="errorMessage" class="error-text">{{ errorMessage }}</span>
@@ -79,6 +101,7 @@ import {
   moduleMeta,
   runAction as applyAction,
 } from '@/api/local-service'
+import { unterminatedPermitCount, unterminatedPermits } from '@/api/permit-service'
 import type { EntryRow } from '@/data/types'
 
 const meta = moduleMeta('safety')
@@ -91,6 +114,8 @@ const rows = ref<EntryRow[]>([])
 const total = ref(0)
 const errorMessage = ref('')
 const filters = ref<Record<string, string>>({})
+const livePermits = ref<EntryRow[]>([])
+const livePermitCount = ref(0)
 const filterFields = columns.slice(0, 3)
 const statusSummary = computed(() =>
   statuses.map((status: string) => ({
@@ -128,6 +153,8 @@ function reload() {
     const payload = listEntries(meta.key, filters.value)
     rows.value = payload.items
     total.value = payload.total
+    livePermits.value = unterminatedPermits()
+    livePermitCount.value = unterminatedPermitCount()
   } catch (error) {
     errorMessage.value = error instanceof Error ? error.message : '安全巡检列表读取失败'
   }
@@ -135,3 +162,18 @@ function reload() {
 
 onMounted(reload)
 </script>
+
+<style scoped>
+.permit-panel {
+  margin-top: 16px;
+}
+.permit-panel h3 {
+  font-size: 14px;
+  margin: 0 0 8px;
+}
+.permit-count {
+  font-size: 13px;
+  color: var(--muted);
+  margin: 0 0 8px;
+}
+</style>

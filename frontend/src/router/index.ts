@@ -18,6 +18,7 @@ const Progress = () => import('@/views/progress/index.vue')
 const Testing = () => import('@/views/testing/index.vue')
 const Drill = () => import('@/views/drill/index.vue')
 const Crew = () => import('@/views/crew/index.vue')
+const Permit = () => import('@/views/permit/index.vue')
 const Safety = () => import('@/views/safety/index.vue')
 
 const router = createRouter({
@@ -41,6 +42,7 @@ const router = createRouter({
     { path: '/testing', name: 'testing', component: Testing },
     { path: '/drill', name: 'drill', component: Drill },
     { path: '/crew', name: 'crew', component: Crew },
+    { path: '/permit', name: 'permit', component: Permit },
     { path: '/safety', name: 'safety', component: Safety },
   ],
 })
