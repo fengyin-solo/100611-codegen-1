@@ -63,6 +63,27 @@
       </tbody>
     </table>
 
+    <h3>动火与受限空间作业整改台账</h3>
+    <p class="ledger-note">
+      未终结作业数：{{ openPermitCount }}（与作业许可页读同一份数据，不重复计算）
+    </p>
+    <table class="data-table">
+      <thead>
+        <tr><th>登记时间</th><th>来源票号</th><th>环节</th><th>结论</th></tr>
+      </thead>
+      <tbody>
+        <tr v-for="item in permitLedger" :key="String(item.id)">
+          <td>{{ item['登记时间'] }}</td>
+          <td>{{ item['来源票号'] }}</td>
+          <td>{{ item['环节'] }}</td>
+          <td>{{ item['结论'] }}</td>
+        </tr>
+        <tr v-if="!permitLedger.length">
+          <td colspan="4" class="empty-state">暂无作业许可整改台账记录</td>
+        </tr>
+      </tbody>
+    </table>
+
     <footer class="page-foot">
       <span>共 {{ total }} 条安全巡检记录</span>
       <span v-if="errorMessage" class="error-text">{{ errorMessage }}</span>
@@ -79,6 +100,7 @@ import {
   moduleMeta,
   runAction as applyAction,
 } from '@/api/local-service'
+import { countOpenPermits, listRectifications } from '@/api/permit-service'
 import type { EntryRow } from '@/data/types'
 
 const meta = moduleMeta('safety')
@@ -91,6 +113,8 @@ const rows = ref<EntryRow[]>([])
 const total = ref(0)
 const errorMessage = ref('')
 const filters = ref<Record<string, string>>({})
+const permitLedger = ref<EntryRow[]>([])
+const openPermitCount = ref(0)
 const filterFields = columns.slice(0, 3)
 const statusSummary = computed(() =>
   statuses.map((status: string) => ({
@@ -128,6 +152,9 @@ function reload() {
     const payload = listEntries(meta.key, filters.value)
     rows.value = payload.items
     total.value = payload.total
+    // 整改台账与未终结作业数都走 permit-service 的单一口径，不与作业许可页各算一遍
+    permitLedger.value = listRectifications()
+    openPermitCount.value = countOpenPermits()
   } catch (error) {
     errorMessage.value = error instanceof Error ? error.message : '安全巡检列表读取失败'
   }
@@ -135,3 +162,15 @@ function reload() {
 
 onMounted(reload)
 </script>
+
+<style scoped>
+h3 {
+  font-size: 14px;
+  margin: 16px 0 8px;
+}
+.ledger-note {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 0 0 8px;
+}
+</style>

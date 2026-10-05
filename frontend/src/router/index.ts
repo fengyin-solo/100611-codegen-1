@@ -19,6 +19,7 @@ const Testing = () => import('@/views/testing/index.vue')
 const Drill = () => import('@/views/drill/index.vue')
 const Crew = () => import('@/views/crew/index.vue')
 const Safety = () => import('@/views/safety/index.vue')
+const Permit = () => import('@/views/permit/index.vue')
 
 const router = createRouter({
   history: createWebHistory(),
@@ -42,6 +43,7 @@ const router = createRouter({
     { path: '/drill', name: 'drill', component: Drill },
     { path: '/crew', name: 'crew', component: Crew },
     { path: '/safety', name: 'safety', component: Safety },
+    { path: '/permit', name: 'permit', component: Permit },
   ],
 })
 

@@ -48,6 +48,21 @@ export function saveRows(key: string, rows: EntryRow[]): void {
   }
 }
 
+// 一次事务写多个集合：先整体落库，任何一步写不成就把缓存撤回，不留半截数据。
+export function saveBatch(entries: Record<string, EntryRow[]>): void {
+  const previous = allRows()
+  const next = { ...previous, ...entries }
+  cache = next
+  try {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next))
+    }
+  } catch (error) {
+    cache = previous
+    throw error
+  }
+}
+
 export function resetRows(key: string): EntryRow[] {
   const rows = clone(SEED_ROWS[key] ?? [])
   saveRows(key, rows)

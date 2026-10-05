@@ -1,7 +1,9 @@
+import { PERMIT_SEED_ROWS } from './permit-seed'
 import type { EntryRow } from './types'
 
 // 示例数据：首次打开时播种，之后浏览器里的改动优先，重置才会回到这份。
 export const SEED_ROWS: Record<string, EntryRow[]> = {
+  ...PERMIT_SEED_ROWS,
   "shield": [
     {
       "id": 1,
@@ -484,6 +486,20 @@ export const SEED_ROWS: Record<string, EntryRow[]> = {
       "检测日期": "2026-09-03",
       "值守人员": "洞内通风样例3",
       "运行状态": "洞内通风样例3"
+    },
+    {
+      "id": 4,
+      "status": "运行中",
+      "pending": true,
+      "abnormal": false,
+      "机组编号": "VENT-0004",
+      "风筒长度": "洞内通风样例4",
+      "送风量": "洞内通风样例4",
+      "洞内温度": "洞内通风样例4",
+      "有害气体浓度": "未超限",
+      "检测日期": "2026-09-16",
+      "值守人员": "孙检测",
+      "运行状态": "运行中"
     }
   ],
   "building": [
